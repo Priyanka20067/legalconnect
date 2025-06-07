@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import connectDB from '../app/lib/mongoose';
 import Lawyer from '../app/models/Lawyer';
-import User from '../app/models/User';
+
 
 export default async function Home() {
   await connectDB();
