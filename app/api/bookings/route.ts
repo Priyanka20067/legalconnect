@@ -8,7 +8,7 @@ export async function POST(req: Request) {
   const { lawyerId, date } = await req.json();
   const session = await getServerSession(authOptions);
 
-  if (!session) return new Response('Unauthorized', { status: 401 });
+  if (!session || !session.user) return new Response('Unauthorized', { status: 401 });
 
   const booking = await Booking.create({
     userId: session.user.id,
@@ -17,5 +17,5 @@ export async function POST(req: Request) {
     status: 'PENDING',
   });
 
-  return new Response(JSON.stringify(booking), { status: 200 });
+  return new Response(JSON.stringify({ booking, sessionId: null }), { status: 200 });
 }
