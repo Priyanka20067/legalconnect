@@ -1,33 +1,36 @@
 import { getServerSession } from 'next-auth';
-import connectDB from '../lib/mongoose';
-import Lawyer from '../models/Lawyer';
-import Booking from '../models/Booking';
 import { authOptions } from '../api/auth/[...nextauth]/route';
+import connectDB from '../lib/mongoose';
+import Booking from '../models/Booking';
 
 export default async function Dashboard() {
-  await connectDB();
   const session = await getServerSession(authOptions);
-  if (!session || session.user.role !== 'LAWYER') {
-    return <div>Access Denied</div>;
+
+  if (!session || !session.user) {
+    return <div className="container mx-auto p-4">Please sign in to view your dashboard.</div>;
   }
 
-  const lawyer = await Lawyer.findOne({ userId: session.user.id }).populate('bookings');
-  if (!lawyer) return <div>Lawyer not found</div>;
-
-  const bookings = await Booking.find({ lawyerId: lawyer._id });
+  await connectDB();
+  const bookings = await Booking.find({ userId: session.user.id }).lean();
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Lawyer Dashboard</h1>
-      <h2 className="text-2xl">Your Bookings</h2>
-      <div className="grid grid-cols-1 gap-4">
-        {bookings.map((booking) => (
-          <div key={booking._id.toString()} className="border p-4 rounded-lg">
-            <p>Date: {booking.date.toLocaleString()}</p>
-            <p>Status: {booking.status}</p>
-          </div>
-        ))}
-      </div>
+      <h1 className="text-3xl font-bold mb-6">
+        Welcome, {session.user.name || 'User'} ({session.user.role || 'User'})
+      </h1>
+      <h2 className="text-2xl font-semibold mb-4">Your Bookings</h2>
+      {bookings.length === 0 ? (
+        <p>No bookings found.</p>
+      ) : (
+        <ul className="space-y-4">
+          {bookings.map((booking: any) => (
+            <li key={booking._id} className="border p-4 rounded shadow">
+              <p>Date: {new Date(booking.date).toLocaleDateString()}</p>
+              <p>Status: {booking.status}</p>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
