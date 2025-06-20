@@ -1,5 +1,6 @@
-import connectDB from '../app/lib/mongoose';
-import Lawyer from '../app/models/Lawyer';
+import Link from 'next/link';
+import connectDB from '../lib/mongoose';
+import Lawyer from '../models/Lawyer';
 
 export default async function Home() {
   await connectDB();
@@ -13,9 +14,9 @@ export default async function Home() {
           <div key={lawyer._id} className="border p-4 rounded shadow">
             <h2 className="text-xl font-semibold">{lawyer.name}</h2>
             <p>{lawyer.specialization}</p>
-            <a href={`/lawyers/${lawyer._id}`} className="text-blue-500 hover:underline">
+            <Link href={`/lawyers/${lawyer._id}`} className="text-blue-500 hover:underline">
               View Profile
-            </a>
+            </Link>
           </div>
         ))}
       </div>

@@ -1,5 +1,5 @@
-import connectDB from '../../lib/mongoose';
-import Booking from '../../models/Booking';
+import connectDB from '../../../lib/mongoose';
+import Booking from '../../../models/Booking';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 

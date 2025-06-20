@@ -1,7 +1,7 @@
 import NextAuth, { AuthOptions, Session, User, JWT } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import connectDB from '../../../lib/mongoose';
-import UserModel from '../../../models/User';
+import connectDB from '../../../../lib/mongoose';
+import UserModel from '../../../../models/User';
 
 export const authOptions: AuthOptions = {
   providers: [

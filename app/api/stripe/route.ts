@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
-import connectDB from '../../lib/mongoose';
-import Booking from '../../models/Booking';
-import Payment from '../../models/Payment';
+import connectDB from '../../../lib/mongoose';
+import Booking from '../../../models/Booking';
+import Payment from '../../../models/Payment';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 

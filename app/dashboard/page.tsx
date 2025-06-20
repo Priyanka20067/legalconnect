@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/route';
-import connectDB from '../lib/mongoose';
-import Booking from '../models/Booking';
+import connectDB from '../../lib/mongoose';
+import Booking from '../../models/Booking';
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
