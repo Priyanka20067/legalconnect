@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, MouseEvent } from 'react';
+import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { loadStripe } from '@stripe/stripe-js';
@@ -11,10 +11,7 @@ export default function BookingForm({ lawyerId }: { lawyerId: string }) {
   const [date, setDate] = useState<Date | [Date, Date] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleDateChange = (
-    value: Date | [Date | null, Date | null] | null,
-    _event: MouseEvent<HTMLButtonElement>
-  ) => {
+  const handleDateChange = (value: Date | [Date | null, Date | null] | null) => {
     if (Array.isArray(value)) {
       const selectedDate = value[0] instanceof Date ? value[0] : null;
       setDate(selectedDate);
