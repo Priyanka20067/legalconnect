@@ -1,10 +1,21 @@
 import mongoose, { Schema } from 'mongoose';
 
-const bookingSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  lawyerId: { type: Schema.Types.ObjectId, ref: 'Lawyer', required: true },
+export interface Booking {
+  _id: string;
+  userId: string;
+  lawyerId: string;
+  date: Date;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+const bookingSchema = new Schema<Booking>({
+  userId: { type: String, required: true },
+  lawyerId: { type: String, required: true },
   date: { type: Date, required: true },
-  status: { type: String, default: 'PENDING' },
+  status: { type: String, required: true },
 }, { timestamps: true });
 
-export default mongoose.models.Booking || mongoose.model('Booking', bookingSchema);
+export default mongoose.models.Booking || mongoose.model<Booking>('Booking', bookingSchema);
