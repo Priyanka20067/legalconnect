@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 
-// Define the Lawyer interface for TypeScript type safety
 export interface Lawyer {
   _id: string;
   name: string;
