@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
-import connectDB from '../../lib/mongoose';
-import Booking from '../../models/Booking';
+import { authOptions } from '@/lib/auth';
+import connectDB from '@/lib/mongoose';
+import BookingModel, { Booking } from '@/models/Booking';
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
@@ -11,7 +11,7 @@ export default async function Dashboard() {
   }
 
   await connectDB();
-  const bookings = await Booking.find({ userId: session.user.id }).lean();
+  const bookings: Booking[] = await BookingModel.find({ userId: session.user.id }).lean<Booking[]>();
 
   return (
     <div className="container mx-auto p-4">
@@ -23,7 +23,7 @@ export default async function Dashboard() {
         <p>No bookings found.</p>
       ) : (
         <ul className="space-y-4">
-          {bookings.map((booking: any) => (
+          {bookings.map((booking) => (
             <li key={booking._id} className="border p-4 rounded shadow">
               <p>Date: {new Date(booking.date).toLocaleDateString()}</p>
               <p>Status: {booking.status}</p>
