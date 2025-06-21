@@ -1,7 +1,8 @@
-import NextAuth, { AuthOptions, Session, User, JWT } from 'next-auth';
+import NextAuth, { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import connectDB from '../../../../lib/mongoose';
-import UserModel from '../../../../models/User';
+import connectDB from '@/lib/mongoose';
+import UserModel, { User } from '@/models/User';
+import bcrypt from 'bcrypt';
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -14,32 +15,32 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         await connectDB();
         if (!credentials?.email || !credentials?.password) return null;
-        const user = await UserModel.findOne({ email: credentials.email });
-        if (user && credentials.password === 'password') { // Replace with proper password check
-          return { id: user._id.toString(), email: user.email, name: user.name, role: user.role };
-        }
-        return null;
+        const user: User | null = await UserModel.findOne({ email: credentials.email }).lean();
+        if (!user) return null;
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) return null;
+        return { id: user._id, email: user.email, name: user.name, role: user.role };
       },
     }),
   ],
   session: {
-    strategy: 'jwt' as const,
+    strategy: 'jwt',
   },
   pages: {
     signIn: '/login',
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.role = user.role;
       }
       return token;
     },
-    async session({ session, token }: { session: Session; token: JWT }) {
-      if (token) {
-        session.user.id = token.id;
-        session.user.role = token.role;
+    async session({ session, token }) {
+      if (session.user && token) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as string;
       }
       return session;
     },

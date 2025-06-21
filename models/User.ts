@@ -1,10 +1,21 @@
 import mongoose, { Schema } from 'mongoose';
 
-const userSchema = new Schema({
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+}
+
+const userSchema = new Schema<User>({
+  name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  name: { type: String },
-  role: { type: String, default: 'USER' },
-  password: { type: String, required: true }, // Add this field
+  password: { type: String, required: true },
+  role: { type: String, default: 'user' },
 }, { timestamps: true });
 
-export default mongoose.models.User || mongoose.model('User', userSchema);
+export default mongoose.models.User || mongoose.model<User>('User', userSchema);
