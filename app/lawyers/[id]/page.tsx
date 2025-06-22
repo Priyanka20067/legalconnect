@@ -3,14 +3,23 @@ import connectDB from '@/lib/mongoose';
 import LawyerModel, { Lawyer } from '@/models/Lawyer';
 import BookingForm from '@/app/components/BookingForm';
 import ReviewSection from '@/app/components/ReviewSection';
+import mongoose from 'mongoose';
 
 interface LawyerPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function LawyerPage({ params }: LawyerPageProps) {
   await connectDB();
-  const lawyer: Lawyer | null = await LawyerModel.findById(params.id).lean<Lawyer>();
+  const resolvedParams = await params;
+  const { id } = resolvedParams;
+
+  // Validate ObjectId
+  if (!mongoose.isValidObjectId(id)) {
+    notFound();
+  }
+
+  const lawyer: Lawyer | null = await LawyerModel.findById(id).lean<Lawyer>();
 
   if (!lawyer) {
     notFound();
