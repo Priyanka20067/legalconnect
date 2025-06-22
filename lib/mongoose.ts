@@ -9,14 +9,20 @@ if (!MONGODB_URI) {
 let isConnected: boolean = false;
 
 export default async function connectDB() {
-  if (isConnected) return;
+  if (isConnected) {
+    console.log('MongoDB already connected');
+    return;
+  }
 
   try {
     await mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
     });
     isConnected = true;
-    console.log('MongoDB connected');
+    console.log('MongoDB connected successfully');
   } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
