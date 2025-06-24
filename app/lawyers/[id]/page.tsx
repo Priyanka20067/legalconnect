@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongoose';
 import LawyerModel, { Lawyer } from '@/models/Lawyer';
 import BookingForm from '@/app/components/BookingForm';
 import ReviewSection from '@/app/components/ReviewSection';
+import Login from '../../../app/login/page';
 import mongoose from 'mongoose';
 
 interface LawyerPageProps {
@@ -32,6 +33,7 @@ export default async function LawyerPage({ params }: LawyerPageProps) {
       <p className="mb-4">{lawyer.bio || 'No bio available.'}</p>
       <BookingForm lawyerId={lawyer._id} />
       <ReviewSection lawyerId={lawyer._id} />
+      <Login/>
     </div>
   );
 }
