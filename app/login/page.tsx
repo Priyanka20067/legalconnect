@@ -31,7 +31,6 @@ export default function LoginPage() {
       setError('An error occurred during login');
     }
   };
-
   return (
     <div className="container mx-auto p-4 max-w-md">
       <h1 className="text-3xl font-bold mb-6 text-center">Login to LegalConnect</h1>
