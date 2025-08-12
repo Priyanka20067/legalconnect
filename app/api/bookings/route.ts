@@ -1,21 +1,33 @@
-import connectDB from '../../../lib/mongoose';
-import Booking from '../../../models/Booking';
+import { NextResponse } from 'next/server';
+import connectDB from '@/lib/mongoose';
+import BookingModel from '@/models/Booking';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
-export async function POST(req: Request) {
-  await connectDB();
-  const { lawyerId, date } = await req.json();
-  const session = await getServerSession(authOptions);
+export async function POST(request: Request) {
+  try {
+    await connectDB();
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
 
-  if (!session || !session.user) return new Response('Unauthorized', { status: 401 });
+    const { lawyerId, date, time, message } = await request.json();
+    if (!lawyerId || !date || !time) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
+    }
 
-  const booking = await Booking.create({
-    userId: session.user.id,
-    lawyerId,
-    date: new Date(date),
-    status: 'PENDING',
-  });
+    const booking = await BookingModel.create({
+      userId: session.user.id,
+      lawyerId,
+      date: new Date(`${date}T${time}`),
+      message,
+      status: 'pending',
+    });
 
-  return new Response(JSON.stringify({ booking, sessionId: null }), { status: 200 });
+    return NextResponse.json({ message: 'Booking created successfully', booking }, { status: 201 });
+  } catch (error: any) {
+    console.error('Booking error:', error);
+    return NextResponse.json({ message: 'Server error' }, { status: 500 });
+  }
 }

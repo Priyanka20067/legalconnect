@@ -17,9 +17,11 @@ export default async function connectDB() {
   try {
     await mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 10000,
+      connectTimeoutMS: 15000,
       socketTimeoutMS: 45000,
       maxPoolSize: 10,
+      retryWrites: true,
+      w: 'majority',
     });
     isConnected = true;
     console.log('MongoDB connected successfully');
