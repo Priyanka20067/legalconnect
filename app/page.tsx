@@ -1,25 +1,35 @@
 import connectDB from '@/lib/mongoose';
 import LawyerModel, { Lawyer } from '@/models/Lawyer';
 import Link from 'next/link';
-import styles from './styles/Home.module.css';
 
 export default async function Home() {
-  await connectDB();
-  const lawyers: Lawyer[] = await LawyerModel.find().lean<Lawyer[]>();
+  let lawyers: Lawyer[] = [];
+  try {
+    await connectDB();
+    lawyers = await LawyerModel.find().lean<Lawyer[]>();
+  } catch (error) {
+    console.error('Failed to fetch lawyers:', error);
+    return (
+      <div className="container mx-auto p-4">
+        <h1 className="text-3xl font-bold mb-6">Welcome to LegalConnect</h1>
+        <p className="text-red-500">Error loading lawyers. Please try again later.</p>
+      </div>
+    );
+  }
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.mainTitle}>Welcome to LegalConnect</h1>
-      <h2 className={styles.sectionTitle}>Available Lawyers</h2>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6">Welcome to LegalConnect</h1>
+      <h2 className="text-2xl font-semibold mb-4">Available Lawyers</h2>
       {lawyers.length === 0 ? (
-        <p className={styles.noLawyers}>No lawyers found.</p>
+        <p>No lawyers found.</p>
       ) : (
-        <ul className={styles.lawyersGrid}>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {lawyers.map((lawyer) => (
-            <li key={lawyer._id} className={styles.lawyerCard}>
-              <h3 className={styles.lawyerName}>{lawyer.name}</h3>
-              <p className={styles.lawyerSpecialization}>Specialization: {lawyer.specialization}</p>
-              <Link href={`/lawyers/${lawyer._id}`} className={styles.profileLink}>
+            <li key={lawyer._id} className="border p-4 rounded shadow">
+              <h3 className="text-xl font-bold">{lawyer.name}</h3>
+              <p>Specialization: {lawyer.specialization}</p>
+              <Link href={`/lawyers/${lawyer._id}`} className="text-blue-500 hover:underline">
                 View Profile
               </Link>
             </li>
