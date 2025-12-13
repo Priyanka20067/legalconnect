@@ -18,7 +18,7 @@ export default async function Dashboard() {
       <h1 className="text-3xl font-bold mb-6">
         Welcome, {session.user.name || 'User'} ({session.user.role || 'User'})
       </h1>
-      <h2 className="text-2xl font-semibold mb-4">Your Bookings</h2>
+      <h2 className="text-2xl font-semibold mb-4">Your Bookings slate is ready to book</h2>
       {bookings.length === 0 ? (
         <p>No bookings found.</p>
       ) : (
