@@ -16,7 +16,7 @@ export default async function Dashboard() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-6">
-        Welcome, {session.user.name || 'User'} ({session.user.role || 'User'})
+        Welcome back to layer booking dashboard, {session.user.name || 'User'} ({session.user.role || 'User'})
       </h1>
       <h2 className="text-2xl font-semibold mb-4">Your Bookings slate is ready to book</h2>
       {bookings.length === 0 ? (
